@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -47,10 +46,8 @@ func runCommand(commandStr string) error {
 			fmt.Fprintln(os.Stdout, sum(arrNum...))
 			return nil
 	}
-	cmd := exec.Command(arrCommandStr[0], arrCommandStr[1:]...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	return cmd.Run()
+	
+	return nil
 }
 
 func sum(numbers ...int64) int64 {
