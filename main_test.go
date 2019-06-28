@@ -67,17 +67,29 @@ func TestRunCommand(t *testing.T) {
 	}
 	
 	isSuccess, msg = runCommand("find 95445")
-	if isSuccess == false {
+	if (isSuccess == false) || (isSuccess == true && msg == "Not Found") {
 		t.Error("unexpected results:", msg)
 	}
 	
 	isSuccess, msg = runCommand("search KTP")
-	if isSuccess == false {
+	if (isSuccess == false) || (isSuccess == true && msg == "Not Found") {
 		t.Error("unexpected results:", msg)
 	}
 	
 	isSuccess, msg = runCommand("status")
 	if isSuccess == false {
 		t.Error("unexpected results:", msg)
+	}
+	
+	isSuccess, msg = runCommand("leave 1")
+	if isSuccess == false {
+		t.Error("unexpected results:", msg)
+	}
+	
+	isSuccess, msg = runCommand("leave 300")
+	if isSuccess == true {
+		t.Error("unexpected results: seharusnya tidak bisa dikosongkan karena nomor melebihi jumlah locker.")
+	} else {
+		fmt.Println("[OK]", msg)
 	}
 }
