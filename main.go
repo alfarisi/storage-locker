@@ -36,8 +36,8 @@ func runCommand(commandStr string) error {
 	
 	if len(arrCommandStr) < 1 {
 		return errors.New("Mohon tuliskan perintah..")
-	} else if (arrCommandStr[0] != "init") && (nLocker == 0) {
-		return errors.New("Mohon tentukan jumlah locker terlebih dulu dengan perintah init [jumlah].")
+	} else if (arrCommandStr[0] != "init") && (arrCommandStr[0] != "help") && (arrCommandStr[0] != "exit") && (nLocker == 0) {
+		return errors.New("Mohon tentukan jumlah locker terlebih dulu dengan perintah init [n].\n")
 	}
 	
 	switch arrCommandStr[0] {
@@ -46,7 +46,7 @@ func runCommand(commandStr string) error {
 		
 		case "init":
 			if nLocker != 0 {
-				msg := fmt.Sprintf("Jumlah locker sudah ditentukan sebelumnya : %d", nLocker)
+				msg := fmt.Sprintf("Jumlah locker sudah ditentukan sebelumnya : %d \n", nLocker)
 				return errors.New(msg)
 			}
 			
@@ -70,19 +70,19 @@ func runCommand(commandStr string) error {
 			if len(arrCommandStr) < 3 {
 				return errors.New("Perintah ini memerlukan 2 argument : [KTP|SIM|Other] [nomor ID]")
 			} else if (arrCommandStr[1] != "KTP") && (arrCommandStr[1] != "SIM") && (arrCommandStr[1] != "Other") {
-				return errors.New("Error: Tipe identitas yang dapat digunakan hanya KTP, SIM atau Other")
+				return errors.New("Error: Tipe identitas yang dapat digunakan hanya KTP, SIM atau Other.\n")
 			}
 			
 			tLockerNum := findNomorIdentitas(arrCommandStr[2])
 			if tLockerNum != 0 {
-				msg := fmt.Sprintf("Peringatan: Kartu identitas dengan nomor %s sebelumnya sudah tersimpan di locker nomor %d", arrCommandStr[2], tLockerNum)
+				msg := fmt.Sprintf("Peringatan: Kartu identitas dengan nomor %s sebelumnya sudah tersimpan di locker nomor %d \n", arrCommandStr[2], tLockerNum)
 				return errors.New(msg)
 			}
 			
 			lockerNum := inputLocker(arrCommandStr[1], arrCommandStr[2])
 			
 			if lockerNum == 0 {
-				return errors.New("Maaf locker sudah penuh")
+				return errors.New("Maaf locker sudah penuh.\n")
 			} else {
 				fmt.Fprintln(os.Stdout, "Kartu identitas tersimpan di locker nomor", lockerNum)
 				return nil
@@ -100,6 +100,7 @@ func runCommand(commandStr string) error {
 					fmt.Fprintln(os.Stdout, row)
 				}
 			}
+			
 			return nil
 		
 		case "leave":
@@ -111,11 +112,11 @@ func runCommand(commandStr string) error {
 			nl := uint8(n)
 			
 			if (err != nil) || (nl == 0) || (nl > nLocker) {
-				return errors.New("Error: Nomor locker tidak tersedia")
+				return errors.New("Error: Nomor locker tidak tersedia.\n")
 			}
 			
 			lockers[nl-1] = map[string]string{"tipeId": "", "nomorId": "", "status": "kosong"}
-			fmt.Fprintln(os.Stdout, "Loker nomor", n, "berhasil dikosongkan")
+			fmt.Fprintln(os.Stdout, "Loker nomor", n, "berhasil dikosongkan.")
 			return nil
 		
 		case "find":
@@ -129,7 +130,7 @@ func runCommand(commandStr string) error {
 				fmt.Fprintln(os.Stdout, "Kartu identitas tersebut berada di locker nomor", tLockerNum)
 				return nil
 			}
-			return errors.New("Nomor identitas tidak ditemukan")
+			return errors.New("Nomor identitas tidak ditemukan.\n")
 		
 		case "search":
 			if len(arrCommandStr) < 2 {
@@ -150,14 +151,14 @@ func runCommand(commandStr string) error {
 			
 			if isFound {
 				strNomorId := strings.Join(arrNomorId, ", ")
-				fmt.Fprintln(os.Stdout, strNomorId)
+				fmt.Fprintln(os.Stdout, "Nomor identitas yang tersimpan:", strNomorId)
 			} else {
 				fmt.Fprintln(os.Stdout, "Tidak ditemukan Nomor Identitas dengan tipe", arrCommandStr[1])
 			}
 			return nil
 			
 		case "help":
-			fmt.Fprintln(os.Stdout, "Jenis perintah\n\n init [jumlah locker]\n status\n input [KTP|SIM|Other] [nomor identitas]\n leave [nomor locker]\n find [nomor identitas]\n search [KTP|SIM|Other]\n help\n exit\n")
+			fmt.Fprintln(os.Stdout, "Daftar perintah yang bisa digunakan:\n\n init [jumlah_locker]\n status\n input [KTP|SIM|Other] [nomor_identitas]\n leave [nomor_locker]\n find [nomor_identitas]\n search [KTP|SIM|Other]\n help\n exit")
 			return nil
 			
 		default:
